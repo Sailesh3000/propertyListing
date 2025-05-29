@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: property-listing-api
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: starter
+    image:
+      url: docker.io/sail3000/property-backend:latest
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGO_URI
+        sync: false # This will be set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false # This will be set manually in Render dashboard
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: property-cache
+          property: connectionString
+      - key: CORS_ORIGIN
+        sync: false # This will be set manually in Render dashboard
+
+  - type: redis
+    name: property-cache
+    ipAllowList: [] # Only allow internal connections
+    plan: starter # Specify the plan as needed
